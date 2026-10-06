@@ -1,0 +1,66 @@
+name: Update prices and deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '37 16 * * 1-5'
+      timezone: America/New_York
+    - cron: '17 18 * * 1-5'
+      timezone: America/New_York
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pair-dashboard-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Build with the latest complete daily prices
+        run: python build_site.py --allow-cached
+      - name: Preserve the latest valid snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/snapshot.json publish_state.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update daily price snapshot and fetch status'
+            git push origin HEAD:main
+          fi
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

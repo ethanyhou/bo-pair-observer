@@ -1,0 +1,351 @@
+{
+  "method": "Manually transcribed visible numeric values and dated labels from the author's video. No image pixels or missing labels were synthesized.",
+  "source": "https://www.youtube.com/watch?v=PAQ4Y7D1JTM",
+  "displayedSettings": "Bo Pair Indicator 35 close",
+  "displayRounding": 0.01,
+  "numeric": [
+    {
+      "symbol": "CGDV",
+      "date": "2026-07-07",
+      "value": 2.59,
+      "frame": "1:31",
+      "use": "fit"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-07-24",
+      "value": 9.1,
+      "frame": "1:31",
+      "use": "fit",
+      "note": "Right-edge date identified by terminal QQQ price 684.23 and the July axis."
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-03-24",
+      "value": 2.38,
+      "frame": "1:27",
+      "use": "check"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-05-29",
+      "value": -10.27,
+      "frame": "2:30",
+      "use": "check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2026-04-17",
+      "value": -7.33,
+      "frame": "1:07",
+      "use": "cross-pair-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2026-07-24",
+      "value": 12.7,
+      "frame": "1:07",
+      "use": "cross-pair-check",
+      "note": "Same terminal QQQ price 684.23."
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2022-07-05",
+      "value": -3.57,
+      "frame": "4:00",
+      "use": "holdout-2022",
+      "note": "Read after the candidate formula and signal rule were selected from 2025–2026 observations."
+    }
+  ],
+  "labels": [
+    {
+      "symbol": "CGDV",
+      "date": "2025-07-03",
+      "direction": 1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2025-08-05",
+      "direction": -1,
+      "frame": "2:30"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2025-08-21",
+      "direction": 1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2025-08-27",
+      "direction": -1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2025-11-17",
+      "direction": 1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-03-27",
+      "direction": -1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-06-30",
+      "direction": 1,
+      "frame": "1:31"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-09-03",
+      "direction": 1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-09-10",
+      "direction": -1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-09-30",
+      "direction": 1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-10-06",
+      "direction": -1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-11-28",
+      "direction": 1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2025-12-12",
+      "direction": 1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2026-04-02",
+      "direction": -1,
+      "frame": "1:07"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2026-06-25",
+      "direction": 1,
+      "frame": "1:07"
+    }
+  ],
+  "labelWindow": {
+    "start": "2025-05-01",
+    "end": "2026-07-24"
+  },
+  "holdoutLabels": [
+    {
+      "symbol": "CGDV",
+      "date": "2022-07-05",
+      "direction": -1,
+      "frame": "4:00"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2022-09-02",
+      "direction": 1,
+      "frame": "4:00"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2023-02-02",
+      "direction": -1,
+      "frame": "4:00"
+    }
+  ],
+  "holdoutWindow": {
+    "start": "2022-07-01",
+    "end": "2023-05-01"
+  },
+  "notes": [
+    "VTV labels overlap around November–December; the obscured down label is excluded until read clearly.",
+    "Date labels are distinct from the unsmoothed plotted ROC; matching labels is not proof of the original source code.",
+    "Later video confirms 30/35 trading-day curves overlaid for each pair. VTV is verifiable: 6 new numeric readings and 4 separately dated signals are included; the older obscured December 2025 label remains excluded."
+  ],
+  "recentSource": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+  "recentDisplayedSettings": "Bo Pair Indicator 30 35 close",
+  "recentNumeric": [
+    {
+      "symbol": "CGDV",
+      "date": "2026-09-10",
+      "period": 30,
+      "value": -5.24,
+      "frame": "5:20",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-09-10",
+      "period": 35,
+      "value": -0.23,
+      "frame": "5:20",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-09-11",
+      "period": 30,
+      "value": -4.09,
+      "frame": "5:44",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "CGDV",
+      "date": "2026-09-11",
+      "period": 35,
+      "value": -1.87,
+      "frame": "5:44",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2021-12-29",
+      "period": 30,
+      "value": -0.48,
+      "frame": "7:15",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2021-12-29",
+      "period": 35,
+      "value": 0.56,
+      "frame": "7:15",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2022-01-05",
+      "period": 30,
+      "value": 7.55,
+      "frame": "7:20",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2022-01-05",
+      "period": 35,
+      "value": 4.86,
+      "frame": "7:20",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2023-01-26",
+      "period": 30,
+      "value": -2.57,
+      "frame": "7:40",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2023-01-26",
+      "period": 35,
+      "value": -1.66,
+      "frame": "7:40",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "use": "independent-recent-video-check"
+    }
+  ],
+  "recentLabels": [
+    {
+      "symbol": "CGDV",
+      "date": "2026-09-10",
+      "direction": -1,
+      "frame": "5:44",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "observation": "visible Risk On label"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2021-12-20",
+      "direction": 1,
+      "frame": "7:15",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "observation": "visible Risk Off label and spoken date"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2022-01-05",
+      "direction": 1,
+      "frame": "7:20",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "observation": "visible Risk Off label and spoken date"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2023-01-26",
+      "direction": -1,
+      "frame": "7:39–7:42",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "observation": "spoken date and cursor date; label obscured by subtitles"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2023-07-21",
+      "direction": 1,
+      "frame": "7:47–7:53",
+      "source": "https://www.youtube.com/watch?v=H5KITpc5LSk",
+      "observation": "spoken end of Risk On interval; date explicitly stated"
+    }
+  ],
+  "fastLabels": [
+    {
+      "symbol": "VTV",
+      "date": "2026-03-20",
+      "period": 30,
+      "direction": -1,
+      "frame": "3:01 (same chart scene as 2:52)",
+      "source": "https://www.youtube.com/watch?v=UAUYt-yPeZ8&t=172s",
+      "observation": "visible pale 30-day Risk On label; inspected without refitting"
+    },
+    {
+      "symbol": "VTV",
+      "date": "2026-03-30",
+      "period": 30,
+      "direction": 1,
+      "frame": "3:01 (same chart scene as 2:52)",
+      "source": "https://www.youtube.com/watch?v=UAUYt-yPeZ8&t=172s",
+      "observation": "visible pale 30-day Risk Off label; inspected without refitting"
+    }
+  ],
+  "riskLabelCheck": {
+    "source": "https://www.youtube.com/watch?v=UAUYt-yPeZ8&t=172s",
+    "displayedSettings": "Bo Pair Indicator 30 35 close",
+    "frame": "3:01",
+    "notes": [
+      "Green Risk On and red Risk Off labels appear for both periods.",
+      "The stronger 35-day 2026-04-02 Risk On and 2026-06-25 Risk Off labels are also readable; both were already included in the original labels array and are not counted twice.",
+      "Other overlapped 30-day labels were not transcribed or treated as verified."
+    ]
+  }
+}

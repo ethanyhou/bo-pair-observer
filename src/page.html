@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>配对观察 · 视频校准版</title>
+<style>/*__STYLE__*/</style>
+</head>
+<body>
+<main>
+  <header>
+    <div><div class="eyebrow">PAIR OBSERVER <span>视频校准版</span></div><h1>配对观察</h1><p class="intro">按 Bo 视频中的曲线与确认日期复算。</p></div>
+    <button id="refresh" class="refresh" type="button">更新行情 <span aria-hidden="true">↻</span></button>
+  </header>
+  <div class="data-line"><span id="dataStatus" role="status">正在读取行情…</span><span id="fetchTime"></span></div>
+  <p id="cloudUpdateNote" class="window-status" hidden></p>
+  <p id="error" class="error" role="alert" hidden></p>
+  <section class="strategy-panel" aria-labelledby="strategyTitle">
+    <div class="strategy-topline"><span>按 Bo 思路的操作参考</span><span id="strategyDate"></span></div>
+    <h2 id="strategyTitle">正在解读最新收盘曲线…</h2>
+    <p id="strategyReason" class="strategy-reason"></p>
+    <p id="strategyWindow" class="strategy-window" hidden></p>
+    <div id="allocationExample" hidden>
+      <div class="allocation-heading"><h3>进攻阶段的配置示例</h3><span>进取 · 约 1.5 倍纳指日敞口</span></div>
+      <div class="allocation-bar" role="img" aria-label="配置示例：QQQ 15%，TQQQ 45%，BOXX 40%"><i class="allocation-qqq"></i><i class="allocation-tqqq"></i><i class="allocation-boxx"></i></div>
+      <div class="allocation-cards">
+        <div><span><i class="allocation-key allocation-qqq"></i>QQQ</span><strong>15%</strong><small>基础纳指敞口</small></div>
+        <div><span><i class="allocation-key allocation-tqqq"></i>TQQQ</span><strong>45%</strong><small>增加纳指敞口</small></div>
+        <div><span><i class="allocation-key allocation-boxx"></i>BOXX</span><strong>40%</strong><small>资金停泊部分</small></div>
+      </div>
+      <p class="allocation-note"><b>这是目标示例，不是今天立即补齐仓位的指令。</b>按「40% 停泊资金＋约 1.5 倍纳指敞口」换算：15% ＋ 3 × 45% = 1.5。比例按这笔策略资金的市值计算，不是股数。</p>
+      <p class="allocation-note">Bo 的实际组合还包含 QLD、SGOV；15／45／40 和以 BOXX 替代停泊资金，均为本页改写。45% TQQQ 属进取配置，未结合你的现有持仓、投资期限与风险承受能力。</p>
+    </div>
+    <p id="allocationUnavailable" class="allocation-note" hidden></p>
+    <div id="strategyActions" class="strategy-actions"></div>
+    <details class="strategy-evidence">
+      <summary>查看当前读数、操作条件与视频依据</summary>
+      <div class="table-wrap"><table><thead><tr><th>配对</th><th>30 日／较前日</th><th>35 日／较前日</th><th>最近 35 日确认</th></tr></thead><tbody id="strategyReadings"></tbody></table></div>
+      <p id="strategyMarket"></p>
+      <p><b>Bo 在视频中的做法：</b>30 日线用于提前观察，35 日线用于进一步确认；关注 CGDV，并用 VTV 等配对交叉核对。市场明显下跌且防御股没有相对转强时，考虑分批加仓；达到计划后允许仓位随价格漂移，出现明显避险或派发信号才重新平衡。</p>
+      <p><a href="https://www.youtube.com/watch?v=v1M--FaNRFM&t=743s" target="_blank" rel="noopener">9 月 2 日 · 12:23 双线与分批</a> · <a href="https://www.youtube.com/watch?v=H5KITpc5LSk&t=676s" target="_blank" rel="noopener">9 月 13 日 · 11:16 加仓条件与 1.5 倍</a> · <a href="https://www.youtube.com/watch?v=xYgA5eFOtQ4&t=506s" target="_blank" rel="noopener">9 月 23 日 · 8:26 现金仓位与再平衡</a></p>
+      <p><b>本页采用的判断：</b>两组 30／35 日线均低于零，且两条 35 日线已向下确认，归为偏进攻；全部高于零且 35 日向上确认，归为偏防御；其余归为分歧。偏进攻时，仅在 QQQ 当日下跌且四条线都较前日下降时，提示「回落加仓观察条件」。这是便于核对的保守代理；Bo 没有公布「明显下跌」的数值门槛、固定分批比例或完整机械规则。</p>
+      <p>35 日确认过滤仍为本页复现。以上判断未纳入 Bo 同时参考的估值、利率、价格行为和期权数据，也未做收益回测；相对领先仍可能伴随绝对亏损。操作参考始终使用最新已收盘日线，切换显示区间或隐藏曲线不会改变结论；修改计算参数后暂停这套解读。数据距美东当天超过 5 个日历日时，也暂停操作参考。</p>
+    </details>
+    <p class="strategy-risk"><a href="https://www.proshares.com/our-etfs/leveraged-and-inverse/tqqq" target="_blank" rel="noopener">TQQQ</a> 目标为纳指每日三倍，长期回报可能明显偏离三倍；<a href="https://funds.alphaarchitect.com/boxetf/" target="_blank" rel="noopener">BOXX</a> 是期权箱式价差基金，存在亏损与流动性风险，不等同现金或保本存款。</p>
+  </section>
+  <div class="toolbar">
+    <div class="ranges" role="group" aria-label="显示区间">
+      <button type="button" data-range="5" aria-pressed="false" title="最近 5 个交易日">1 周</button>
+      <button type="button" data-range="21" aria-pressed="false" title="最近 21 个交易日">1 个月</button>
+      <button type="button" data-range="63" aria-pressed="false" title="最近 63 个交易日">3 个月</button>
+      <button type="button" data-range="126" aria-pressed="true">6 个月</button>
+      <button type="button" data-range="252" aria-pressed="false">1 年</button>
+      <button type="button" data-range="756" aria-pressed="false">3 年</button>
+      <button type="button" data-range="0" aria-pressed="false">全部</button>
+      <button type="button" data-range="video" aria-pressed="false">视频区间</button>
+    </div>
+    <div id="parameterSummary" class="parameter-summary"></div>
+  </div>
+  <p id="windowStatus" class="window-status" role="status"></p>
+  <p class="window-status">每张图可独立筛选曲线：30 个交易日为虚线，35 个交易日默认为实线。右侧大数字对应实线；两条指标线各有独立的 Risk On／Risk Off 确认标签。悬停或点击标签可查看操作含义。</p>
+  <p class="window-status">青蓝背景线为 QQQ 收盘价，看右轴（美元）；配对指标看左轴（%）。两轴独立缩放，曲线交叉不表示买卖信号。</p>
+  <div class="charts">
+    <section class="chart-panel" data-symbol="VTV" aria-labelledby="vtv-title">
+      <div class="chart-heading"><div><h2 id="vtv-title"><i class="swatch vtv"></i>VTV <span>／ QQQ</span></h2><div class="asset-caption">价值股 · 纳斯达克 100</div></div><div class="metric"><strong id="value-VTV">—</strong><span id="state-VTV"></span></div></div>
+      <div class="legend-row"><div class="chart-legend" role="group" aria-label="VTV 曲线筛选">
+        <button class="curve-toggle" type="button" data-curve="fast" aria-pressed="true" aria-controls="chart-VTV"><i class="legend-line dashed" aria-hidden="true"></i><span>30 日 · 虚线</span></button>
+        <button class="curve-toggle" type="button" data-curve="main" aria-pressed="true" aria-controls="chart-VTV"><i class="legend-line" aria-hidden="true"></i><span data-main-label>35 日 · 实线</span></button>
+        <button class="curve-toggle" type="button" data-curve="qqq" aria-pressed="true" aria-controls="chart-VTV"><i class="legend-line" aria-hidden="true"></i><span>QQQ 价格 · 右轴</span></button>
+      </div><span class="legend-hint">点击图例筛选曲线</span></div>
+      <div class="risk-legend"><span class="risk-key risk-on">Risk On · 偏进攻</span><span class="risk-key risk-off">Risk Off · 偏防御</span><button type="button" data-risk-labels aria-pressed="true" aria-label="VTV Risk On／Risk Off 标签" aria-controls="chart-VTV">信号标签：开</button></div>
+      <div class="chart" id="chart-VTV"></div><div class="chart-detail" id="detail-VTV" aria-live="polite"></div>
+      <div class="signal-status" id="signalStatus-VTV"></div>
+      <p class="signal-note" id="signalNote-VTV" hidden></p>
+      <details class="signal-history"><summary id="signalSummary-VTV">区间信号列表</summary><div id="signalList-VTV" class="signal-list"></div></details>
+    </section>
+    <section class="chart-panel" data-symbol="CGDV" aria-labelledby="cgdv-title">
+      <div class="chart-heading"><div><h2 id="cgdv-title"><i class="swatch cgdv"></i>CGDV <span>／ QQQ</span></h2><div class="asset-caption">股息价值策略 · 纳斯达克 100</div></div><div class="metric"><strong id="value-CGDV">—</strong><span id="state-CGDV"></span></div></div>
+      <div class="legend-row"><div class="chart-legend" role="group" aria-label="CGDV 曲线筛选">
+        <button class="curve-toggle" type="button" data-curve="fast" aria-pressed="true" aria-controls="chart-CGDV"><i class="legend-line dashed" aria-hidden="true"></i><span>30 日 · 虚线</span></button>
+        <button class="curve-toggle" type="button" data-curve="main" aria-pressed="true" aria-controls="chart-CGDV"><i class="legend-line" aria-hidden="true"></i><span data-main-label>35 日 · 实线</span></button>
+        <button class="curve-toggle" type="button" data-curve="qqq" aria-pressed="true" aria-controls="chart-CGDV"><i class="legend-line" aria-hidden="true"></i><span>QQQ 价格 · 右轴</span></button>
+      </div><span class="legend-hint">点击图例筛选曲线</span></div>
+      <div class="risk-legend"><span class="risk-key risk-on">Risk On · 偏进攻</span><span class="risk-key risk-off">Risk Off · 偏防御</span><button type="button" data-risk-labels aria-pressed="true" aria-label="CGDV Risk On／Risk Off 标签" aria-controls="chart-CGDV">信号标签：开</button></div>
+      <div class="chart" id="chart-CGDV"></div><div class="chart-detail" id="detail-CGDV" aria-live="polite"></div>
+      <div class="signal-status" id="signalStatus-CGDV"></div>
+      <p class="signal-note" id="signalNote-CGDV" hidden></p>
+      <details class="signal-history"><summary id="signalSummary-CGDV">区间信号列表</summary><div id="signalList-CGDV" class="signal-list"></div></details>
+    </section>
+  </div>
+  <div class="reading"><span><b>零线上方</b>：前者相对更强</span><span><b>零线下方</b>：QQQ 相对更强</span><span>彩色菱形：30 日切换 · 彩色圆点：实线切换 · 空心圆：视频原值</span><span>Risk On：负向确认，偏向 QQQ · Risk Off：正向确认，偏向防御；只在状态切换日标记，不是每天的买卖指令。</span></div>
+  <details class="verification" id="verification">
+    <summary>与 Bo 视频对照 <span id="verificationSummary"></span></summary>
+    <p>原值来自视频画面，日期来自可读标签或作者明确讲述。其中 2 个读数用于筛选曲线公式，其余用于核对。新增 9 月 13 日视频中的 30／35 日读数及 VTV 历史日期，均在原规则确定后检验。不是逐像素比较，也不是收益回测。</p>
+    <div class="compare-actions"><button type="button" id="showReference">查看视频中的 2025–2026 曲线</button><button type="button" id="showHoldout">查看 2022–2023 检验区间</button></div>
+    <div class="table-wrap"><table><thead><tr><th>配对／日期</th><th>视频原值</th><th>本页复算</th><th>两位小数</th></tr></thead><tbody id="numericEvidence"></tbody></table></div>
+    <p id="labelEvidence"></p><div id="labelDates" class="label-dates"></div>
+    <p>早期画面显示「Bo Pair Indicator 35 close」，后续画面显示「Bo Pair Indicator 30 35 close」：同一个配对的两条 ROC 叠加。曲线不做 EMA 平滑、不做分红复权。确认规则推断为：连续两日同侧，且本日继续向该方向移动；状态改变时标记一次。30 日和 35 日分别应用此规则，30 日目前仅核对了两个可读标签，尚不能证明全部标签与原版一致。</p>
+    <p><a href="https://www.youtube.com/watch?v=UAUYt-yPeZ8&t=172s" target="_blank" rel="noopener">你指定的 Risk On／Risk Off 画面（2:52 附近）</a>：绿色为 Risk On，红色为 Risk Off，两条周期线都有标签。标签开关只改变显示，不改变计算或上方操作参考。</p>
+    <p>这些检验支持当前复现，但有限画面不能证明源码完全相同。<a href="https://www.youtube.com/watch?v=PAQ4Y7D1JTM&t=67s" target="_blank" rel="noopener">VTV 参考 1:07</a> · <a href="https://www.youtube.com/watch?v=PAQ4Y7D1JTM&t=150s" target="_blank" rel="noopener">CGDV 参考 2:30</a> · <a href="https://www.youtube.com/watch?v=PAQ4Y7D1JTM&t=240s" target="_blank" rel="noopener">历史检验 4:00</a></p>
+    <p><a href="https://www.youtube.com/watch?v=H5KITpc5LSk&t=320s" target="_blank" rel="noopener">近期双线画面 5:20</a> · <a href="https://www.youtube.com/watch?v=H5KITpc5LSk&t=435s" target="_blank" rel="noopener">VTV 新检验 7:15</a>。日线／30–35 个交易日是计算周期；6 个月是显示窗口，不是固定持仓期限。</p>
+  </details>
+  <details class="settings"><summary>参数与计算方式</summary>
+    <form id="settingsForm">
+      <label>实线回看交易日<input id="lookback" name="lookback" type="number" min="1" max="250" value="35" required></label>
+      <label>EMA 平滑日数（1 为关闭）<input id="smoothing" name="smoothing" type="number" min="1" max="100" value="1" required></label>
+      <label>确认阈值 ±%<input id="band" name="band" type="number" min="0" max="20" step="0.05" value="0" required></label>
+      <label>连续确认日数<input id="confirmation" name="confirmation" type="number" min="1" max="20" value="2" required></label>
+      <label>价格口径<select id="priceBasis" name="priceBasis"><option value="close" selected>收盘价（不作分红复权）</option><option value="adjClose">分红／拆股复权收盘价</option></select></label>
+      <label class="check-label"><input id="trendConfirmation" name="trendConfirmation" type="checkbox" checked>确认日须继续同方向移动</label>
+      <div class="form-actions"><button class="primary" type="submit">应用参数</button><button id="reset" type="button">恢复视频校准参数</button></div>
+    </form>
+    <p class="formula">R = A 的收盘价 ÷ QQQ 的收盘价；S(t) = 100 × [R(t) ÷ R(t−N) − 1]。虚线 N=30，实线默认 N=35。</p>
+    <p>向上确认：S(t) &gt; 0、S(t−1) &gt; 0，且 S(t) &gt; S(t−1)。向下确认：两日均小于 0，且 S(t) &lt; S(t−1)。其余时候保留上次状态；只在状态改变时打点。缺失行情会中断计算并重新预热。</p>
+    <p>默认参数按视频校准。修改参数后，对照表会重新计算匹配情况；EMA 设为 1 表示不平滑。没有进行收益优化或收益回测。</p>
+  </details>
+  <footer>
+    <p>相对更强也可能只是跌得更少。曲线反映历史相对强弱，不代表实测机构资金流向；上方操作与配置是依据公开视频改写的策略参考。</p>
+    <p id="dataNote"></p>
+    <p class="sources">来源：<a href="https://finance.yahoo.com/quote/QQQ/history/" target="_blank" rel="noopener">Yahoo Finance 行情</a><span>·</span><a href="https://www.youtube.com/watch?v=PAQ4Y7D1JTM&t=656s" target="_blank" rel="noopener">Bo 的公开说明</a><span>·</span><button id="download" type="button" class="text-button">保存离线快照</button></p>
+  </footer>
+</main>
+<div id="riskTooltip" class="risk-tooltip" role="tooltip" hidden></div>
+<script id="embeddedData" type="application/json">__PAIR_DATA__</script>
+<script id="embeddedEvidence" type="application/json">__PAIR_EVIDENCE__</script>
+<script>/*__MATH__*/</script>
+<script>/*__STRATEGY__*/</script>
+<script>/*__APP__*/</script>
+</body>
+</html>
