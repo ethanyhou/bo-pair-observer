@@ -14,6 +14,7 @@
   const pp = value => {const rounded=Number(value.toFixed(2));return (rounded>0?'+':'')+rounded.toFixed(2)+' 个百分点';};
   let data, warning, range='video', selected, plot, refreshing=false, conclusionScope='period';
   const toggles = [...document.querySelectorAll('[data-bond-series]')];
+  const scopeButtons = [...document.querySelectorAll('button[data-bond-conclusion-scope]')];
   const shown = () => fields.filter(k=>toggles.find(b=>b.dataset.bondSeries===k).getAttribute('aria-pressed')==='true');
 
   function validate(next) {
@@ -168,20 +169,20 @@
     finally{refreshing=false;}
   }
   for(const button of toggles)button.addEventListener('click',()=>{button.setAttribute('aria-pressed',String(button.getAttribute('aria-pressed')!=='true'));draw();});
-  for(const button of document.querySelectorAll('[data-bond-range]'))button.addEventListener('click',()=>{
+  for(const button of document.querySelectorAll('button[data-bond-range]'))button.addEventListener('click',()=>{
     range=button.dataset.bondRange;document.documentElement.dataset.bondRange=range;
-    document.querySelectorAll('[data-bond-range]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));draw();
+    document.querySelectorAll('button[data-bond-range]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));draw();
   });
   $('bondMonth').addEventListener('change',()=>{selected=$('bondMonth').value;updateSelection();});
   $('bondLatest').addEventListener('click',()=>{selected=data.asOf;updateSelection();});
-  for(const button of document.querySelectorAll('[data-bond-conclusion-scope]'))button.addEventListener('click',()=>{
+  for(const button of scopeButtons)button.addEventListener('click',()=>{
     conclusionScope=button.dataset.bondConclusionScope;document.documentElement.dataset.bondConclusionScope=conclusionScope;
-    document.querySelectorAll('[data-bond-conclusion-scope]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));updateSummary();
+    scopeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));updateSummary();
   });
   document.addEventListener('bond-refresh',refresh);
   try{
-    range=document.documentElement.dataset.bondRange||document.querySelector('[data-bond-range][aria-pressed="true"]').dataset.bondRange;
-    conclusionScope=document.documentElement.dataset.bondConclusionScope||document.querySelector('[data-bond-conclusion-scope][aria-pressed="true"]').dataset.bondConclusionScope;
+    range=document.documentElement.dataset.bondRange||document.querySelector('button[data-bond-range][aria-pressed="true"]').dataset.bondRange;
+    conclusionScope=document.documentElement.dataset.bondConclusionScope||scopeButtons.find(b=>b.getAttribute('aria-pressed')==='true').dataset.bondConclusionScope;
     setData(JSON.parse($('embeddedBondData').textContent));
     new ResizeObserver(draw).observe($('bondChart'));
     refresh();
