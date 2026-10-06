@@ -33,13 +33,15 @@ jobs:
           python-version: '3.12'
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Verify monthly model parsing and fallback
+        run: python -m unittest discover -s tests
       - name: Build with the latest complete daily prices
         run: python build_site.py --allow-cached
       - name: Preserve the latest valid snapshot
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/snapshot.json publish_state.json
+          git add src/snapshot.json src/bond_snapshot.json publish_state.json
           if ! git diff --cached --quiet; then
             git commit -m 'Update daily price snapshot and fetch status'
             git push origin HEAD:main
@@ -63,4 +65,3 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

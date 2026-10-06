@@ -103,7 +103,7 @@ def atomic_write(path, content):
     temp.replace(path)
 
 
-def build_page(payload):
+def build_page(payload, bond_payload=None, bond_warning=None):
     html = (ROOT / 'page.html').read_text(encoding='utf-8')
     html = html.replace('/*__STYLE__*/', (ROOT / 'style.css').read_text(encoding='utf-8'))
     html = html.replace('__PAIR_DATA__', json.dumps(payload, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c'))
@@ -112,6 +112,10 @@ def build_page(payload):
     html = html.replace('/*__MATH__*/', (ROOT / 'pair_math.js').read_text(encoding='utf-8'))
     html = html.replace('/*__STRATEGY__*/', (ROOT / 'strategy.js').read_text(encoding='utf-8'))
     html = html.replace('/*__APP__*/', (ROOT / 'app.js').read_text(encoding='utf-8'))
+    if bond_payload is None:
+        bond_payload = json.loads((ROOT / 'bond_snapshot.json').read_text(encoding='utf-8'))
+    html = html.replace('__BOND_DATA__', json.dumps({'data': bond_payload, 'warning': bond_warning}, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c'))
+    html = html.replace('/*__BONDS__*/', (ROOT / 'bonds.js').read_text(encoding='utf-8'))
     atomic_write(OUTPUT, html)
 
 
@@ -173,6 +177,8 @@ class Handler(BaseHTTPRequestHandler):
                     self.send_error(503, 'Market data unavailable')
                     return
             self.reply(OUTPUT.read_bytes(), 'text/html; charset=utf-8')
+        elif route.path == '/bond-data.json':
+            self.reply_json({'data': json.loads((ROOT / 'bond_snapshot.json').read_text(encoding='utf-8')), 'warning': None})
         else:
             self.send_error(404)
 

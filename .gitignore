@@ -2,4 +2,4 @@ __pycache__/
 *.pyc
 dist/
 .DS_Store
-
+bond-panel-preview.png

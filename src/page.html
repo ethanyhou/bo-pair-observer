@@ -40,7 +40,7 @@
       <p><b>Bo 在视频中的做法：</b>30 日线用于提前观察，35 日线用于进一步确认；关注 CGDV，并用 VTV 等配对交叉核对。市场明显下跌且防御股没有相对转强时，考虑分批加仓；达到计划后允许仓位随价格漂移，出现明显避险或派发信号才重新平衡。</p>
       <p><a href="https://www.youtube.com/watch?v=v1M--FaNRFM&t=743s" target="_blank" rel="noopener">9 月 2 日 · 12:23 双线与分批</a> · <a href="https://www.youtube.com/watch?v=H5KITpc5LSk&t=676s" target="_blank" rel="noopener">9 月 13 日 · 11:16 加仓条件与 1.5 倍</a> · <a href="https://www.youtube.com/watch?v=xYgA5eFOtQ4&t=506s" target="_blank" rel="noopener">9 月 23 日 · 8:26 现金仓位与再平衡</a></p>
       <p><b>本页采用的判断：</b>两组 30／35 日线均低于零，且两条 35 日线已向下确认，归为偏进攻；全部高于零且 35 日向上确认，归为偏防御；其余归为分歧。偏进攻时，仅在 QQQ 当日下跌且四条线都较前日下降时，提示「回落加仓观察条件」。这是便于核对的保守代理；Bo 没有公布「明显下跌」的数值门槛、固定分批比例或完整机械规则。</p>
-      <p>35 日确认过滤仍为本页复现。以上判断未纳入 Bo 同时参考的估值、利率、价格行为和期权数据，也未做收益回测；相对领先仍可能伴随绝对亏损。操作参考始终使用最新已收盘日线，切换显示区间或隐藏曲线不会改变结论；修改计算参数后暂停这套解读。数据距美东当天超过 5 个日历日时，也暂停操作参考。</p>
+      <p>35 日确认过滤仍为本页复现。以上判断未纳入 Bo 同时参考的估值、利率、价格行为和期权数据，也未做收益回测；相对领先仍可能伴随绝对亏损。下方<a href="#bond-panel">美债分解图</a>补充宏观背景，不参与这里的机械判断或仓位换算。操作参考始终使用最新已收盘日线，切换显示区间或隐藏曲线不会改变结论；修改计算参数后暂停这套解读。数据距美东当天超过 5 个日历日时，也暂停操作参考。</p>
     </details>
     <p class="strategy-risk"><a href="https://www.proshares.com/our-etfs/leveraged-and-inverse/tqqq" target="_blank" rel="noopener">TQQQ</a> 目标为纳指每日三倍，长期回报可能明显偏离三倍；<a href="https://funds.alphaarchitect.com/boxetf/" target="_blank" rel="noopener">BOXX</a> 是期权箱式价差基金，存在亏损与流动性风险，不等同现金或保本存款。</p>
   </section>
@@ -89,6 +89,44 @@
     </section>
   </div>
   <div class="reading"><span><b>零线上方</b>：前者相对更强</span><span><b>零线下方</b>：QQQ 相对更强</span><span>彩色菱形：30 日切换 · 彩色圆点：实线切换 · 空心圆：视频原值</span><span>Risk On：负向确认，偏向 QQQ · Risk Off：正向确认，偏向防御；只在状态切换日标记，不是每天的买卖指令。</span></div>
+  <section id="bond-panel" class="chart-panel bond-panel" aria-labelledby="bond-title">
+    <div class="chart-heading"><div><div class="bond-eyebrow">债市背景 · 月度模型</div><h2 id="bond-title">十年美债收益率分解</h2><p class="bond-intro">按 Bo 10 月 4 日视频图例，用克利夫兰联储官方数据复算。</p></div><div class="metric"><strong id="bondNominal">—</strong><span>最新模型合成名义收益率</span></div></div>
+    <p id="bondDataStatus" class="bond-data-status" role="status">正在读取月度模型…</p>
+    <p id="bondWarning" class="error" role="alert" hidden></p>
+    <div class="bond-toolbar"><div class="ranges" role="group" aria-label="美债图显示区间">
+      <button type="button" data-bond-range="6" aria-pressed="false">6 个月</button>
+      <button type="button" data-bond-range="12" aria-pressed="false">1 年</button>
+      <button type="button" data-bond-range="36" aria-pressed="false">3 年</button>
+      <button type="button" data-bond-range="0" aria-pressed="false">全部</button>
+      <button type="button" data-bond-range="video" aria-pressed="true">视频区间 · 4 月起</button>
+    </div><span id="bondWindow" class="legend-hint"></span></div>
+    <div class="chart-legend bond-legend" role="group" aria-label="美债曲线筛选">
+      <button class="curve-toggle" type="button" data-bond-series="expectedReal" aria-pressed="true" aria-controls="bondChart" title="实际利率预期：Bo 将它用于观察增长与资本需求；上行仍可能增加科技股估值压力。"><i class="legend-line" aria-hidden="true"></i><span>实际利率预期</span></button>
+      <button class="curve-toggle" type="button" data-bond-series="inflation" aria-pressed="true" aria-controls="bondChart" title="通胀预期：上行可能增加政策与估值压力；下降且增长稳定时可能有利于美股。"><i class="legend-line" aria-hidden="true"></i><span>通胀预期</span></button>
+      <button class="curve-toggle" type="button" data-bond-series="realPremium" aria-pressed="true" aria-controls="bondChart" title="实际利率风险溢价：上行表示对未来实际利率不确定性的补偿增加；不是增长改善的直接证据。"><i class="legend-line dashed" aria-hidden="true"></i><span>实际利率风险溢价</span></button>
+      <button class="curve-toggle" type="button" data-bond-series="inflationPremium" aria-pressed="true" aria-controls="bondChart" title="通胀风险溢价：上行表示通胀不确定性补偿增加；下降可能缓解风险，但不能单独保证股票上涨。"><i class="legend-line dashed" aria-hidden="true"></i><span>通胀风险溢价</span></button>
+      <button class="curve-toggle" type="button" data-bond-series="nominal" aria-pressed="true" aria-controls="bondChart" title="模型合成名义收益率：四项之和，看右轴。利率上升或下降的影响取决于驱动项。"><i class="legend-line" aria-hidden="true"></i><span>名义收益率 · 右轴</span></button>
+    </div>
+    <p class="bond-axis-note">四项分解看左轴（%），黄色合成线看右轴（%）。两轴独立缩放；曲线相交不构成信号。点击图例筛选，悬停或触摸图表查看月份。</p>
+    <div id="bondChart" class="chart bond-chart"></div>
+    <div class="bond-month-select"><label for="bondMonth">查看月份</label><select id="bondMonth" aria-controls="bondDetail bondCurveReadings"></select><button id="bondLatest" type="button">回到最新月份</button></div>
+    <div id="bondDetail" class="chart-detail" aria-live="polite"></div>
+    <div class="bond-summary"><h3 id="bondSummaryTitle">最新月度变化</h3><p id="bondSummary"></p><p id="bondPeriodChange" class="bond-period-change"></p></div>
+    <h3 class="bond-readings-title">这些曲线对美股意味着什么？</h3>
+    <p class="bond-axis-note">下面是潜在利好与风险，不是美股预期收益率或涨跌概率。读数随所选月份变化；上面的「最新月度变化」始终依据最新官方月份。</p>
+    <div id="bondCurveReadings" class="bond-curve-readings"></div>
+    <div class="bond-scenarios">
+      <div><h3>收益率上升，实际利率预期主导</h3><p>按 Bo 的解读，可能反映增长与 AI 投资需求较强，美股仍可上涨。利率变高同时会抬高融资成本、压低估值，不能据此认定股市安全。</p></div>
+      <div><h3>收益率下降，通胀因素主导</h3><p>如果实际增长预期保持稳定，通胀预期和通胀风险溢价回落，可能缓解折现率与政策压力，为美股提供估值支持。</p></div>
+      <div><h3>收益率下降，实际利率预期降得更快</h3><p>Bo 将它视为增长与资本需求转弱的警讯。此时降息或通胀回落的好消息，可能掩盖盈利风险；QQQ／TQQQ 仍可能下跌。</p></div>
+    </div>
+    <details class="bond-method"><summary>数据口径、公式与视频依据</summary>
+      <p>实际利率预期 = 官方十年实际利率 − 实际利率风险溢价；模型合成名义收益率 = 实际利率预期 + 通胀预期 + 实际利率风险溢价 + 通胀风险溢价。与视频图例相同，合成线不是另外抓取的盘中十年期美债报价。</p>
+      <p>这是联储模型的估计值。日期代表模型月份，数据按月发布；月份之间的线段仅用于连线，不代表每日观测。修订后的官方历史数据可能与视频当时的数值有差异。</p>
+      <p>本页同时显示最新一个月和所选区间的变化，不将月度变化改写成 Bo 未公开的买卖阈值。Bo 对增长和 AI 投资的解释是一种宏观判断，这几条线本身不能验证因果关系或给出固定仓位。债市背景不改变上方 30／35 日策略参考。</p>
+      <p><a href="https://www.youtube.com/watch?v=wERSMycMUNA&t=317s" target="_blank" rel="noopener">Bo · 5:17 分解图</a> · <a href="https://www.youtube.com/watch?v=wERSMycMUNA&t=615s" target="_blank" rel="noopener">10:15 对美股的解读</a> · <a href="https://www.clevelandfed.org/indicators-and-data/inflation-expectations" target="_blank" rel="noopener">克利夫兰联储 · 模型与发布时间</a> · <a href="https://www.clevelandfed.org/-/media/files/webcharts/inflationexpectations/inflation-expectations.xlsx?sc_lang=en" target="_blank" rel="noopener">官方历史数据</a></p>
+    </details>
+  </section>
   <details class="verification" id="verification">
     <summary>与 Bo 视频对照 <span id="verificationSummary"></span></summary>
     <p>原值来自视频画面，日期来自可读标签或作者明确讲述。其中 2 个读数用于筛选曲线公式，其余用于核对。新增 9 月 13 日视频中的 30／35 日读数及 VTV 历史日期，均在原规则确定后检验。不是逐像素比较，也不是收益回测。</p>
@@ -123,8 +161,10 @@
 <div id="riskTooltip" class="risk-tooltip" role="tooltip" hidden></div>
 <script id="embeddedData" type="application/json">__PAIR_DATA__</script>
 <script id="embeddedEvidence" type="application/json">__PAIR_EVIDENCE__</script>
+<script id="embeddedBondData" type="application/json">__BOND_DATA__</script>
 <script>/*__MATH__*/</script>
 <script>/*__STRATEGY__*/</script>
 <script>/*__APP__*/</script>
+<script>/*__BONDS__*/</script>
 </body>
 </html>

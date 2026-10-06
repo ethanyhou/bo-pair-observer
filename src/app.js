@@ -405,6 +405,7 @@
   async function refresh(force=false) {
     if(!isHosted){showError('这是离线快照。双击配套的“打开配对指标.command”可打开支持更新的版本。');return;}
     const button=$('refresh');button.disabled=true;button.textContent='更新中…';showError('');
+    document.dispatchEvent(new Event('bond-refresh'));
     try {
       const endpoint=isPages?'data.json?check='+Date.now():'/api/data'+(force?'?refresh=1':'');
       const response=await fetch(endpoint,{cache:'no-store',signal:AbortSignal.timeout(35000)});
