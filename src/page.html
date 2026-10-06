@@ -109,11 +109,20 @@
     </div>
     <p class="bond-axis-note">四项分解看左轴（%），黄色合成线看右轴（%）。两轴独立缩放；曲线相交不构成信号。点击图例筛选，悬停或触摸图表查看月份。</p>
     <div id="bondChart" class="chart bond-chart"></div>
-    <div class="bond-month-select"><label for="bondMonth">查看月份</label><select id="bondMonth" aria-controls="bondDetail bondCurveReadings"></select><button id="bondLatest" type="button">回到最新月份</button></div>
+    <div class="bond-month-select"><label for="bondMonth">查看月份</label><select id="bondMonth" aria-controls="bondDetail bondCurveReadings bondConclusion"></select><button id="bondLatest" type="button">回到最新月份</button></div>
     <div id="bondDetail" class="chart-detail" aria-live="polite"></div>
-    <div class="bond-summary"><h3 id="bondSummaryTitle">最新月度变化</h3><p id="bondSummary"></p><p id="bondPeriodChange" class="bond-period-change"></p></div>
+    <div class="bond-summary">
+      <div class="bond-summary-heading"><h3 id="bondSummaryTitle">一句话结论</h3><div class="ranges bond-conclusion-scopes" role="group" aria-label="结论的比较范围">
+        <button type="button" data-bond-conclusion-scope="period" aria-pressed="true" aria-controls="bondConclusion bondConclusionContext bondSummary">图中区间</button>
+        <button type="button" data-bond-conclusion-scope="month" aria-pressed="false" aria-controls="bondConclusion bondConclusionContext bondSummary">所选月环比</button>
+      </div></div>
+      <p id="bondConclusionContext" class="bond-conclusion-context"></p>
+      <p id="bondConclusion" class="bond-conclusion" aria-live="polite" aria-atomic="true"></p>
+      <p id="bondSummary" class="bond-conclusion-evidence" title="变化及合计按原值计算；各项显示保留两位小数，可能有四舍五入尾差。"></p>
+      <p class="bond-conclusion-note">依据 Bo 的解读框架自动归纳，规则由本页实现；结论始终使用全部四项，隐藏曲线只改变显示。月度背景不直接决定 QQQ／TQQQ 的买卖或仓位。</p>
+    </div>
     <h3 class="bond-readings-title">这些曲线对美股意味着什么？</h3>
-    <p class="bond-axis-note">下面是潜在利好与风险，不是美股预期收益率或涨跌概率。读数随所选月份变化；上面的「最新月度变化」始终依据最新官方月份。</p>
+    <p class="bond-axis-note">下面是潜在利好与风险，不是美股预期收益率或涨跌概率。读数随所选月份变化；一句话结论默认比较图中首尾月份，切换「所选月环比」后随悬停、触摸或月份选择更新。</p>
     <div id="bondCurveReadings" class="bond-curve-readings"></div>
     <div class="bond-scenarios">
       <div><h3>收益率上升，实际利率预期主导</h3><p>按 Bo 的解读，可能反映增长与 AI 投资需求较强，美股仍可上涨。利率变高同时会抬高融资成本、压低估值，不能据此认定股市安全。</p></div>
@@ -123,7 +132,9 @@
     <details class="bond-method"><summary>数据口径、公式与视频依据</summary>
       <p>实际利率预期 = 官方十年实际利率 − 实际利率风险溢价；模型合成名义收益率 = 实际利率预期 + 通胀预期 + 实际利率风险溢价 + 通胀风险溢价。与视频图例相同，合成线不是另外抓取的盘中十年期美债报价。</p>
       <p>这是联储模型的估计值。日期代表模型月份，数据按月发布；月份之间的线段仅用于连线，不代表每日观测。修订后的官方历史数据可能与视频当时的数值有差异。</p>
-      <p>本页同时显示最新一个月和所选区间的变化，不将月度变化改写成 Bo 未公开的买卖阈值。Bo 对增长和 AI 投资的解释是一种宏观判断，这几条线本身不能验证因果关系或给出固定仓位。债市背景不改变上方 30／35 日策略参考。</p>
+      <p>一句话结论先计算比较起止月份的四项变化，再将通胀预期与通胀风险溢价相加，比较实际利率预期、通胀因素和实际利率风险溢价对合成债息变化的贡献。增量／降幅最大表示同方向贡献最大，不表示唯一原因；并列时保留混合判断。债息下降时，如果实际利率预期比通胀因素降得更快，会提示增长风险；债息上升而实际利率预期回落时，也会提示相反因素并存。</p>
+      <p>「图中区间」比较当前图表首尾月份；「所选月环比」比较所选月份与紧邻前月，即使前月在图表范围之外。缺少相邻月份时不生成方向判断。比较按页面两位小数精度进行，未引入 Bo 未公开的买卖阈值。结论反映起止差异，不能代表期间每个月走势相同。</p>
+      <p>自动归纳规则由本页根据 Bo 的定性解读实现，不是他的原版指标或逐字发言。Bo 对增长和 AI 投资的解释是一种宏观判断，这几条线本身不能验证因果关系或给出固定仓位。债市背景不改变上方 30／35 日策略参考。</p>
       <p><a href="https://www.youtube.com/watch?v=wERSMycMUNA&t=317s" target="_blank" rel="noopener">Bo · 5:17 分解图</a> · <a href="https://www.youtube.com/watch?v=wERSMycMUNA&t=615s" target="_blank" rel="noopener">10:15 对美股的解读</a> · <a href="https://www.clevelandfed.org/indicators-and-data/inflation-expectations" target="_blank" rel="noopener">克利夫兰联储 · 模型与发布时间</a> · <a href="https://www.clevelandfed.org/-/media/files/webcharts/inflationexpectations/inflation-expectations.xlsx?sc_lang=en" target="_blank" rel="noopener">官方历史数据</a></p>
     </details>
   </section>
@@ -165,6 +176,7 @@
 <script>/*__MATH__*/</script>
 <script>/*__STRATEGY__*/</script>
 <script>/*__APP__*/</script>
+<script>/*__BOND_READING__*/</script>
 <script>/*__BONDS__*/</script>
 </body>
 </html>

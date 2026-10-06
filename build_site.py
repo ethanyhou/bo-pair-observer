@@ -90,7 +90,7 @@ def main():
     server.atomic_write(site / 'data.json', json.dumps({'data': payload, 'warning': warning, 'lastAttempt': state.get('lastAttempt')}, ensure_ascii=False, separators=(',', ':')))
     server.atomic_write(site / 'bond-data.json', json.dumps({'data': bond_payload, 'warning': state.get('bondWarning')}, ensure_ascii=False, separators=(',', ':')))
     (site / '.nojekyll').touch()
-    if '__PAIR_DATA__' in html or '__BOND_DATA__' in html or '/*__APP__*/' in html or '/*__BONDS__*/' in html:
+    if '__PAIR_DATA__' in html or '__BOND_DATA__' in html or '/*__APP__*/' in html or '/*__BONDS__*/' in html or '/*__BOND_READING__*/' in html:
         raise ValueError('Unresolved page placeholders')
     summary = f'Price data through {payload["asOf"]} (New York); ' + ('fresh provider fetch' if updated else 'existing snapshot')
     print(summary)

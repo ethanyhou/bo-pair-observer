@@ -33,8 +33,10 @@ jobs:
           python-version: '3.12'
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Verify monthly model parsing and fallback
-        run: python -m unittest discover -s tests
+      - name: Verify monthly model and dynamic conclusions
+        run: |
+          python -m unittest discover -s tests
+          node --test tests/test_bond_reading.cjs
       - name: Build with the latest complete daily prices
         run: python build_site.py --allow-cached
       - name: Preserve the latest valid snapshot

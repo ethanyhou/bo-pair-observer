@@ -11,8 +11,8 @@
   };
   const month = date => date.slice(0,7);
   const percent = value => Number.isFinite(value) ? value.toFixed(2)+'%' : '—';
-  const pp = value => (value>0?'+':'')+value.toFixed(2)+' 个百分点';
-  let data, warning, range='video', selected, plot, refreshing=false;
+  const pp = value => {const rounded=Number(value.toFixed(2));return (rounded>0?'+':'')+rounded.toFixed(2)+' 个百分点';};
+  let data, warning, range='video', selected, plot, refreshing=false, conclusionScope='period';
   const toggles = [...document.querySelectorAll('[data-bond-series]')];
   const shown = () => fields.filter(k=>toggles.find(b=>b.dataset.bondSeries===k).getAttribute('aria-pressed')==='true');
 
@@ -30,14 +30,15 @@
   function setData(payload) {
     validate(payload.data);
     if(data && payload.data.asOf<data.asOf)throw new Error('发布的模型月份早于已有缓存');
+    const followLatest=!selected || selected===data?.asOf;
     data=payload.data;warning=payload.warning||null;
     $('embeddedBondData').textContent=JSON.stringify(payload).replace(/</g,'\\u003c');
     $('bondNominal').textContent=percent(data.rows.at(-1).nominal);
     const publication=data.lastPublishedAt?'官方发布 '+data.lastPublishedAt:'官方发布日期未提供';
     $('bondDataStatus').textContent='模型月份 '+month(data.asOf)+' · '+publication+(data.nextUpdate?' · 预计下次 '+data.nextUpdate:'')+' · 按月发布，非盘中行情';
     showWarning();
-    if(!selected || !data.rows.some(r=>r.date===selected))selected=data.asOf;
-    draw();updateSummary();
+    if(followLatest || !data.rows.some(r=>r.date===selected))selected=data.asOf;
+    draw();
   }
 
   function showWarning(extra) {
@@ -119,7 +120,7 @@
     }
     overlay.addEventListener('pointermove',event=>{if(event.pointerType!=='touch')pick(event);});
     overlay.addEventListener('pointerdown',pick);
-    updateSelection();updatePeriod();
+    updateSelection();
   }
 
   function updateSelection() {
@@ -143,24 +144,17 @@
       for(const [label,text] of [['上行时',definition.up],['下行时',definition.down]]){const p=document.createElement('p'),b=document.createElement('b');b.textContent=label+'：';p.append(b,document.createTextNode(text));card.append(p);}
       readings.append(card);
     }
+    updateSummary();
   }
 
   function updateSummary() {
-    const current=data.rows.at(-1),previous=data.rows.at(-2),delta=k=>current[k]-previous[k];
-    const inflationDelta=delta('inflation')+delta('inflationPremium');
-    $('bondSummaryTitle').textContent='最新月度变化 · '+month(current.date)+' 对比 '+month(previous.date);
-    let interpretation;
-    if(delta('nominal')>0){
-      interpretation=delta('expectedReal')<0?'收益率上行与实际利率预期回落同时出现；需区分增长预期转弱和通胀／风险补偿上升。':'按 Bo 的思路，实际利率预期上升可以与增长较强并存；通胀和风险溢价上行仍可能增加估值压力。';
-    }else if(delta('nominal')<0){
-      interpretation=delta('expectedReal')<0 && -delta('expectedReal')>Math.max(0,-inflationDelta)?'实际利率预期的降幅超过通胀因素的降幅，符合 Bo 提醒应关注的增长风险情景；不能自动把收益率下降当作美股利好。':inflationDelta<0?'通胀因素回落；若实际增长预期稳定，按 Bo 的思路可能缓解美股定价压力。':'收益率下降主要需结合风险溢价变化解释，单看合成线不能判断美股方向。';
-    }else interpretation='模型收益率基本不变，仍需观察内部驱动项的变化。';
-    $('bondSummary').textContent='模型名义收益率 '+pp(delta('nominal'))+'；实际利率预期 '+pp(delta('expectedReal'))+'，通胀因素（预期＋风险溢价）合计 '+pp(inflationDelta)+'，实际利率风险溢价 '+pp(delta('realPremium'))+'。'+interpretation+' 这是月度背景解读，不是 QQQ／TQQQ 的买卖或仓位指令。';
-  }
-
-  function updatePeriod() {
-    const first=plot.rows[0],last=plot.rows.at(-1),delta=k=>last[k]-first[k];
-    $('bondPeriodChange').textContent=first===last?'本区间只有一个月度点，无法比较区间变化。':'所选区间 '+month(first.date)+' → '+month(last.date)+'：名义收益率 '+pp(delta('nominal'))+'；实际利率预期 '+pp(delta('expectedReal'))+'；通胀因素合计 '+pp(delta('inflation')+delta('inflationPremium'))+'；实际利率风险溢价 '+pp(delta('realPremium'))+'。';
+    const {first,last}=BondReading.comparison(data.rows,plot.rows,conclusionScope,selected),reading=BondReading.analyze(first,last);
+    const label=conclusionScope==='period'?'图中首尾月份':'所选月份与前月';
+    $('bondConclusionContext').textContent=label+' · '+(first && last?month(first.date)+' → '+month(last.date):last?month(last.date)+' · 缺少相邻前月':'没有可比较数据');
+    $('bondConclusion').textContent=reading.text;
+    $('bondConclusion').dataset.kind=reading.kind;
+    const d=reading.deltas;
+    $('bondSummary').textContent=d?'变化依据：实际利率预期 '+pp(d.expectedReal)+'；通胀预期 '+pp(d.inflation)+'；实际利率风险溢价 '+pp(d.realPremium)+'；通胀风险溢价 '+pp(d.inflationPremium)+'。四项原值合计 '+pp(d.nominal)+'，其中通胀因素合计 '+pp(reading.inflationDelta)+'。':'当前数据不足以计算变化。';
   }
 
   async function refresh() {
@@ -180,9 +174,14 @@
   });
   $('bondMonth').addEventListener('change',()=>{selected=$('bondMonth').value;updateSelection();});
   $('bondLatest').addEventListener('click',()=>{selected=data.asOf;updateSelection();});
+  for(const button of document.querySelectorAll('[data-bond-conclusion-scope]'))button.addEventListener('click',()=>{
+    conclusionScope=button.dataset.bondConclusionScope;document.documentElement.dataset.bondConclusionScope=conclusionScope;
+    document.querySelectorAll('[data-bond-conclusion-scope]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));updateSummary();
+  });
   document.addEventListener('bond-refresh',refresh);
   try{
     range=document.documentElement.dataset.bondRange||document.querySelector('[data-bond-range][aria-pressed="true"]').dataset.bondRange;
+    conclusionScope=document.documentElement.dataset.bondConclusionScope||document.querySelector('[data-bond-conclusion-scope][aria-pressed="true"]').dataset.bondConclusionScope;
     setData(JSON.parse($('embeddedBondData').textContent));
     new ResizeObserver(draw).observe($('bondChart'));
     refresh();

@@ -115,6 +115,7 @@ def build_page(payload, bond_payload=None, bond_warning=None):
     if bond_payload is None:
         bond_payload = json.loads((ROOT / 'bond_snapshot.json').read_text(encoding='utf-8'))
     html = html.replace('__BOND_DATA__', json.dumps({'data': bond_payload, 'warning': bond_warning}, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c'))
+    html = html.replace('/*__BOND_READING__*/', (ROOT / 'bond_reading.js').read_text(encoding='utf-8'))
     html = html.replace('/*__BONDS__*/', (ROOT / 'bonds.js').read_text(encoding='utf-8'))
     atomic_write(OUTPUT, html)
 
