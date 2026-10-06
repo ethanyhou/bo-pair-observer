@@ -362,7 +362,7 @@
       const i = Math.max(0,Math.min(rows.length-1,Math.round(((event.clientX-bounds.left)-margin.left)/iw*(rows.length-1))));
       selected = rows[i]?.date; updateDetails();
     }
-    target.addEventListener('pointermove', e => {if(e.pointerType==='mouse' || e.buttons) inspect(e);});
+    target.addEventListener('pointermove', e => {if((e.pointerType==='mouse' && (e.movementX || e.movementY)) || e.buttons) inspect(e);});
     target.addEventListener('pointerdown', inspect);
     svg.addEventListener('pointerleave', e => {if(e.pointerType==='mouse') {selected=null;updateDetails();}});
     svg.addEventListener('keydown', e => {
@@ -424,6 +424,16 @@
     const button=riskButton(symbol);button.setAttribute('aria-pressed',String(button.getAttribute('aria-pressed')!=='true'));draw(symbol);updateDetails();
   });
   function setRange(value){range=['video','holdout'].includes(value)?value:Number(value);document.documentElement.dataset.pairRange=String(range);selected=null;document.querySelectorAll('[data-range]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.range===String(range))));drawAll();}
+  function returnToLatest(){
+    if(!data)return;
+    selected=null;hideRiskHelp();
+    if(['video','holdout'].includes(range))setRange(126);else updateDetails();
+  }
+  window.addEventListener('pageshow',event=>{
+    if(!isHosted)return;
+    returnToLatest();
+    if(event.persisted&&!$('refresh').disabled)refresh(false);
+  });
   document.querySelectorAll('[data-range]').forEach(button=>button.addEventListener('click',()=>setRange(button.dataset.range)));
   $('showReference').addEventListener('click',()=>{setRange('video');document.querySelector('.toolbar').scrollIntoView({block:'start'});});
   $('showHoldout').addEventListener('click',()=>{setRange('holdout');document.querySelector('.toolbar').scrollIntoView({block:'start'});});
@@ -448,7 +458,7 @@
       $('cloudUpdateNote').textContent='云端每个工作日美东 16:37 更新、18:17 补查。页面打开时及每 5 分钟检查最新发布数据；定时任务可能延迟。';
       $('refresh').title='读取云端最新已发布的收盘数据';
       setInterval(()=>{if(!document.hidden&&!$('refresh').disabled)refresh(false);},300000);
-      document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('refresh').disabled)refresh(false);});
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden){returnToLatest();if(!$('refresh').disabled)refresh(false);}});
     }
     const observer=new ResizeObserver(()=>drawAll());symbols.forEach(s=>observer.observe($('chart-'+s)));
     if(isHosted)refresh(false);else $('refresh').textContent='离线快照';

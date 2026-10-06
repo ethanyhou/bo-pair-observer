@@ -107,7 +107,7 @@
       <button class="curve-toggle" type="button" data-bond-series="inflationPremium" aria-pressed="true" aria-controls="bondChart" title="通胀风险溢价：上行表示通胀不确定性补偿增加；下降可能缓解风险，但不能单独保证股票上涨。"><i class="legend-line dashed" aria-hidden="true"></i><span>通胀风险溢价</span></button>
       <button class="curve-toggle" type="button" data-bond-series="nominal" aria-pressed="true" aria-controls="bondChart" title="模型合成名义收益率：四项之和，看右轴。利率上升或下降的影响取决于驱动项。"><i class="legend-line" aria-hidden="true"></i><span>名义收益率 · 右轴</span></button>
     </div>
-    <p class="bond-axis-note">四项分解看左轴（%），黄色合成线看右轴（%）。两轴独立缩放；曲线相交不构成信号。点击图例筛选，悬停或触摸图表查看月份。</p>
+    <p class="bond-axis-note">四项分解看左轴（%），黄色合成线看右轴（%）。两轴独立缩放；曲线相交不构成信号。每次进入页面默认查看最新月份；悬停只临时预览，移开后恢复所选月份，点击或触摸图表可选定历史月份。</p>
     <div id="bondChart" class="chart bond-chart"></div>
     <div class="bond-month-select"><label for="bondMonth">查看月份</label><select id="bondMonth" aria-controls="bondDetail bondCurveReadings bondConclusion"></select><button id="bondLatest" type="button">回到最新月份</button></div>
     <div id="bondDetail" class="chart-detail" aria-live="polite"></div>

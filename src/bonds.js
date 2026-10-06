@@ -12,7 +12,7 @@
   const month = date => date.slice(0,7);
   const percent = value => Number.isFinite(value) ? value.toFixed(2)+'%' : '—';
   const pp = value => {const rounded=Number(value.toFixed(2));return (rounded>0?'+':'')+rounded.toFixed(2)+' 个百分点';};
-  let data, warning, range='video', selected, plot, refreshing=false, conclusionScope='period';
+  let data, warning, range='video', selected, hovered=null, plot, refreshing=false, conclusionScope='period';
   const toggles = [...document.querySelectorAll('[data-bond-series]')];
   const scopeButtons = [...document.querySelectorAll('button[data-bond-conclusion-scope]')];
   const shown = () => fields.filter(k=>toggles.find(b=>b.dataset.bondSeries===k).getAttribute('aria-pressed')==='true');
@@ -71,6 +71,7 @@
 
   function draw() {
     if(!data)return;
+    hovered=null;
     const rows=windowRows(), visible=shown(), box=$('bondChart');
     box.replaceChildren();
     if(!rows.length){box.textContent='该区间没有月度模型数据。';return;}
@@ -114,24 +115,28 @@
     const dots={};for(const field of visible){dots[field]=node('circle',{r:4,fill:`var(--bond-${field})`,stroke:'var(--surface)','stroke-width':1.5});svg.append(dots[field]);}
     const overlay=node('rect',{x:margin.left,y:margin.top,width:iw,height:ih,fill:'transparent'});svg.append(overlay);
     plot={rows,x,leftY,rightY,guide,dots,visible};
-    function pick(event){
+    function pick(event, preview=false){
       const rect=svg.getBoundingClientRect(),px=(event.clientX-rect.left)*w/rect.width;
       const row=rows.reduce((best,r)=>Math.abs(x(r.date)-px)<Math.abs(x(best.date)-px)?r:best,rows[0]);
-      selected=row.date;updateSelection();
+      if(preview)hovered=row.date===selected?null:row.date;
+      else {selected=row.date;hovered=null;}
+      updateSelection();
     }
-    overlay.addEventListener('pointermove',event=>{if(event.pointerType!=='touch')pick(event);});
-    overlay.addEventListener('pointerdown',pick);
+    // A stationary pointer can receive events when navigation or layout moves the chart under it.
+    overlay.addEventListener('pointermove',event=>{if(event.pointerType!=='touch' && (event.movementX || event.movementY))pick(event,true);});
+    overlay.addEventListener('pointerdown',event=>pick(event));
+    overlay.addEventListener('pointerleave',()=>{if(hovered){hovered=null;updateSelection();}});
     updateSelection();
   }
 
   function updateSelection() {
     if(!plot)return;
-    const row=plot.rows.find(r=>r.date===selected)||plot.rows.at(-1),allIndex=data.rows.findIndex(r=>r.date===row.date),previous=data.rows[allIndex-1];
-    $('bondMonth').value=row.date;
+    const row=plot.rows.find(r=>r.date===(hovered||selected))||plot.rows.at(-1),allIndex=data.rows.findIndex(r=>r.date===row.date),previous=data.rows[allIndex-1];
+    $('bondMonth').value=selected;
     plot.guide.setAttribute('x1',plot.x(row.date));plot.guide.setAttribute('x2',plot.x(row.date));plot.guide.setAttribute('visibility',plot.visible.length?'visible':'hidden');
     for(const [field,dot] of Object.entries(plot.dots)){dot.setAttribute('cx',plot.x(row.date));dot.setAttribute('cy',(field==='nominal'?plot.rightY:plot.leftY)(row[field]));}
     const detail=$('bondDetail');detail.replaceChildren();
-    for(const [label,value] of [['模型月份',month(row.date)],...plot.visible.map(k=>[meanings[k].name,percent(row[k])])]){
+    for(const [label,value] of [[hovered?'悬停预览':'模型月份',month(row.date)],...plot.visible.map(k=>[meanings[k].name,percent(row[k])])]){
       const span=document.createElement('span'),b=document.createElement('b');span.textContent=label+' ';b.textContent=value;span.append(b);detail.append(span);
     }
     const readings=$('bondCurveReadings');readings.replaceChildren();
@@ -149,8 +154,8 @@
   }
 
   function updateSummary() {
-    const {first,last}=BondReading.comparison(data.rows,plot.rows,conclusionScope,selected),reading=BondReading.analyze(first,last);
-    const label=conclusionScope==='period'?'图中首尾月份':'所选月份与前月';
+    const {first,last}=BondReading.comparison(data.rows,plot.rows,conclusionScope,hovered||selected),reading=BondReading.analyze(first,last);
+    const label=conclusionScope==='period'?'图中首尾月份':hovered?'悬停预览月份与前月':'所选月份与前月';
     $('bondConclusionContext').textContent=label+' · '+(first && last?month(first.date)+' → '+month(last.date):last?month(last.date)+' · 缺少相邻前月':'没有可比较数据');
     $('bondConclusion').textContent=reading.text;
     $('bondConclusion').dataset.kind=reading.kind;
@@ -168,18 +173,26 @@
     }catch(error){showWarning('本次未读取到新的月度模型，保留 '+month(data.asOf)+' 缓存。'+error.message);}
     finally{refreshing=false;}
   }
+  function returnToLatest() {
+    if(!data)return;
+    selected=data.asOf;hovered=null;updateSelection();
+  }
   for(const button of toggles)button.addEventListener('click',()=>{button.setAttribute('aria-pressed',String(button.getAttribute('aria-pressed')!=='true'));draw();});
   for(const button of document.querySelectorAll('button[data-bond-range]'))button.addEventListener('click',()=>{
     range=button.dataset.bondRange;document.documentElement.dataset.bondRange=range;
     document.querySelectorAll('button[data-bond-range]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));draw();
   });
-  $('bondMonth').addEventListener('change',()=>{selected=$('bondMonth').value;updateSelection();});
-  $('bondLatest').addEventListener('click',()=>{selected=data.asOf;updateSelection();});
+  $('bondMonth').addEventListener('change',()=>{selected=$('bondMonth').value;hovered=null;updateSelection();});
+  $('bondLatest').addEventListener('click',returnToLatest);
   for(const button of scopeButtons)button.addEventListener('click',()=>{
     conclusionScope=button.dataset.bondConclusionScope;document.documentElement.dataset.bondConclusionScope=conclusionScope;
     scopeButtons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));updateSummary();
   });
   document.addEventListener('bond-refresh',refresh);
+  window.addEventListener('pageshow',event=>{returnToLatest();if(event.persisted)refresh();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){returnToLatest();refresh();}});
+  window.addEventListener('hashchange',()=>{if(location.hash==='#bond-panel'){returnToLatest();refresh();}});
+  document.addEventListener('click',event=>{if(event.target.closest('a[href="#bond-panel"]')){returnToLatest();refresh();}});
   try{
     range=document.documentElement.dataset.bondRange||document.querySelector('button[data-bond-range][aria-pressed="true"]').dataset.bondRange;
     conclusionScope=document.documentElement.dataset.bondConclusionScope||scopeButtons.find(b=>b.getAttribute('aria-pressed')==='true').dataset.bondConclusionScope;
